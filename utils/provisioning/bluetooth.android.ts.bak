@@ -1,0 +1,426 @@
+// import { Buffer } from "buffer";
+// import { bytesToString } from "convert-string";
+// import {
+//   NativeEventEmitter,
+//   NativeModules,
+//   PermissionsAndroid,
+//   Platform,
+// } from "react-native";
+// import BleManager, {
+//   Peripheral
+// } from "react-native-ble-manager";
+// import { SetupProps } from "~/screens/Connect/Setup";
+
+// // Add type declaration for convert-string
+// declare module 'convert-string';
+
+// const scope = "Utils.provisioning.bluetooth";
+// const BleManagerModule = NativeModules.BleManager;
+// const BleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+
+// const SECONDS_TO_SCAN_FOR = 3;
+// const WIFI_SERVICE_UUID = "1CF0FE66-3ECF-4D6E-A9FC-E287AB124B96";
+// const WIFI_CONNECT_CHARACTERISTIC_UUID = "1F80AF6A-2B71-4E35-94E5-00F854D8F16F";
+// const BLE_STATUS_CHARACTERISTIC_UUID = "1F80AF6C-2B71-4E35-94E5-00F854D8F16F";
+// export const WIFI_SCAN_CHARACTERISTIC_UUID =
+//   "1F80AF6D-2B71-4E35-94E5-00F854D8F16F";
+// export const WIFI_SCAN_RESULTS_CHARACTERISTIC_UUID =
+//   "1F80AF6E-2B71-4E35-94E5-00F854D8F16F";
+// const READ_DUID_CHARACTERISTIC_UUID = "00000001-FE28-435B-991A-F1B21BB9BCD0";
+// const THERMOSTAT_SERVICE_UUID = ["FE28"];
+// const ALLOW_DUPLICATES = false;
+// const AYLA_CONNECTIVITY_GATT_SERVICE_UUID =
+//   "FCE3EC41-59B6-4873-AE36-FAB25BD59ADC";
+// const SETUP_TOKEN_CHARACTERISTIC_UUID = "7E9869ED-4DB3-4520-88EA-1C21EF1BA834";
+
+// export interface Network {
+//   index: number;
+//   ssid: string;
+//   ssidLength: number;
+//   bssid: string;
+//   rssi: number;
+//   security: number;
+// }
+
+// export const getDSN = async (peripheralId: string): Promise<number[]> => {
+//   console.log("Before read call");
+//   const promise: Promise<number[]> = BleManager.read(
+//     peripheralId,
+//     THERMOSTAT_SERVICE_UUID[0],
+//     READ_DUID_CHARACTERISTIC_UUID
+//   ) as Promise<number[]>;
+//   console.log("After read call");
+
+//   return promise;
+// };
+
+// export var connectedThroughBluetooth = false;
+
+// var bluetoothInitialized = false;
+
+// export const initializeBluetooth = async (
+//   onSuccess: () => void,
+//   onFail: () => void
+// ) => {
+//   console.log("[initializeBluetooth] Starting initialization...");
+  
+//   if (Platform.OS === "android") {
+//     try {
+//       // First check if Bluetooth is available
+//       const isAvailable = await BleManager.checkState();
+//       console.log("[initializeBluetooth] Bluetooth state:", isAvailable);
+
+//       // Request permissions in the correct order
+//       const permissions = [
+//         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+//         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT
+//       ];
+
+//       console.log("[initializeBluetooth] Requesting permissions:", permissions);
+//       const results = await PermissionsAndroid.requestMultiple(permissions);
+//       console.log("[initializeBluetooth] Permission results:", results);
+      
+//       // Check if all permissions were granted
+//       const allGranted = Object.values(results).every(
+//         result => result === PermissionsAndroid.RESULTS.GRANTED
+//       );
+
+//       if (!allGranted) {
+//         console.log("[initializeBluetooth] Some permissions were not granted:", results);
+//         return onFail();
+//       }
+
+//       // Initialize BleManager
+//       if (!bluetoothInitialized) {
+//         console.log("[initializeBluetooth] Initializing BleManager...");
+//         bluetoothInitialized = true;
+//         try {
+//           await BleManager.start({ showAlert: false });
+//           console.log("[initializeBluetooth] BleManager started successfully");
+          
+//           // Enable Bluetooth if not already enabled
+//           const state = await BleManager.checkState();
+//           console.log("[initializeBluetooth] Current Bluetooth state:", state);
+          
+//           if ((state as string) !== 'PoweredOn') {
+//             console.log("[initializeBluetooth] Enabling Bluetooth...");
+//             await BleManager.enableBluetooth();
+//             console.log("[initializeBluetooth] Bluetooth enabled");
+//           }
+          
+//           console.log("[initializeBluetooth] Initialization complete");
+//           onSuccess();
+//         } catch (error) {
+//           console.log("[initializeBluetooth] Failed to initialize Bluetooth:", error);
+//           onFail();
+//         }
+//       } else {
+//         console.log("[initializeBluetooth] BleManager already initialized");
+//         onSuccess();
+//       }
+//     } catch (e) {
+//       console.log("[initializeBluetooth] Permissions error:", e);
+//       return onFail();
+//     }
+//   } else {
+//     console.log("[initializeBluetooth] iOS does not require Bluetooth permissions");
+//     onSuccess();
+//   }
+// };
+
+// // Puedes continuar con el resto del código tal como está sin necesidad de cambios adicionales.
+
+// export const scanWifiNetworks = (peripheralId: string) => {
+//   BleManager.retrieveServices(peripheralId)
+//     .then(() => {
+//       console.log("Retrieve services for wifi scan successful");
+//       BleManager.write(
+//         peripheralId,
+//         WIFI_SERVICE_UUID,
+//         WIFI_SCAN_CHARACTERISTIC_UUID,
+//         []
+//       )
+//         .then(() => {
+//           console.log("Wifi scan started");
+//           if (Platform.OS == "android") {
+//             BleManager.requestMTU(peripheralId, 515).then(() => {
+//               BleManager.startNotification(
+//                 peripheralId,
+//                 WIFI_SERVICE_UUID,
+//                 WIFI_SCAN_RESULTS_CHARACTERISTIC_UUID
+//               )
+//                 .then(() => {
+//                   console.log("Wifi scan result notifications started");
+//                 })
+//                 .catch(error => {
+//                   console.log("Wifi scan result notifications failed");
+//                   console.log(error);
+//                 });
+//             });
+//           } else {
+//             BleManager.startNotification(
+//               peripheralId,
+//               WIFI_SERVICE_UUID,
+//               WIFI_SCAN_RESULTS_CHARACTERISTIC_UUID
+//             )
+//               .then(() => {
+//                 console.log("Wifi scan result notifications started");
+//               })
+//               .catch(error => {
+//                 console.log("Wifi scan result notifications failed");
+//                 console.log(error);
+//               });
+//           }
+//         })
+//         .catch(error => {
+//           console.log("Wifi scan failed");
+//           console.log(error);
+//         });
+//     })
+//     .catch(e => {
+//       console.log("Retrieve services for wifi scan failed");
+//       console.error(e);
+//     });
+// };
+
+// export const scanForBleDevice = async (
+//   onDeviceFound: (device: Peripheral) => void,
+//   onNoDeviceFound: () => void,
+//   signal?: AbortSignal
+// ) => {
+//   console.log("[scanForBleDevice] Starting scan...");
+//   try {
+//     // Check Bluetooth state before scanning
+//     const state = await BleManager.checkState();
+//     console.log("[scanForBleDevice] Bluetooth state:", state);
+    
+//     if ((state as string) !== 'PoweredOn') {
+//       console.log("[scanForBleDevice] Bluetooth is not powered on");
+//       onNoDeviceFound();
+//       return;
+//     }
+
+//     // Start scanning
+//     console.log("[scanForBleDevice] Starting BLE scan...");
+//     await BleManager.scan(THERMOSTAT_SERVICE_UUID, SECONDS_TO_SCAN_FOR, true);
+//     console.log("[scanForBleDevice] Scan started successfully");
+
+//     BleManagerEmitter.addListener(
+//       "BleManagerDiscoverPeripheral",
+//       async peripheral => {
+//         console.log("[scanForBleDevice] Peripheral discovered:", peripheral);
+//         onDeviceFound(peripheral);
+//         stopScanWithReason("Peripheral found");
+//       }
+//     );
+
+//     BleManagerEmitter.addListener("BleManagerStopScan", async args => {
+//       console.log("[scanForBleDevice] Scan stopped:", args);
+//       if (args.status === 10) {
+//         console.log("[scanForBleDevice] Scan timed out");
+//         onNoDeviceFound();
+//       }
+//     });
+//   } catch (error) {
+//     console.log("[scanForBleDevice] Error during scan:", error);
+//     onNoDeviceFound();
+//   }
+// };
+
+// export const sendSetupTokenCharacteristic = async (
+//   peripheralId: string,
+//   setupToken: string
+// ) => {
+//   var byteArray: number[] = [];
+
+//   for (var i = 0; i < setupToken.length; i++) {
+//     byteArray = byteArray.concat(setupToken.charCodeAt(i));
+//   }
+
+//   BleManager.write(
+//     peripheralId,
+//     AYLA_CONNECTIVITY_GATT_SERVICE_UUID,
+//     SETUP_TOKEN_CHARACTERISTIC_UUID,
+//     byteArray
+//   )
+//     .then(() => {
+//       console.log("Write token successful");
+//     })
+//     .catch(err => {
+//       console.log("Write token failed");
+//       console.error(err);
+//     });
+// };
+
+// export const sendWifiConnectCharacteristic = (
+//   peripheral: Peripheral,
+//   network: Network,
+//   password: string,
+//   onSuccess: () => void,
+//   onFail: () => void
+// ) => {
+//   BleManager.retrieveServices(peripheral.id)
+//     .then(() => {
+//       console.log("Retrieved services");
+
+//       BleManager.requestMTU(peripheral.id, 515)
+//         .then(size => {
+//           console.log("MTU request success, size:", size);
+
+//           let bssid = [0, 0, 0, 0, 0, 0];
+//           let buf1 = Buffer.from(network.ssid.padEnd(32, "\0"));
+//           let buf2 = Buffer.from([network.ssidLength]);
+//           let buf3 = Buffer.from(bssid);
+//           let buf4 = Buffer.from(password.padEnd(64, "\0"));
+//           let buf5 = Buffer.from([password.length]);
+//           let buf6 = Buffer.from([0x03]);
+//           let buffers = [buf1, buf2, buf3, buf4, buf5, buf6];
+//           let data = Buffer.concat(buffers).toJSON().data;
+//           console.log(
+//             `${network.ssid} ${network.ssidLength} ${password.length} ${data.length}`
+//           );
+
+//           BleManager.writeWithoutResponse(
+//             peripheral.id,
+//             WIFI_SERVICE_UUID,
+//             WIFI_CONNECT_CHARACTERISTIC_UUID,
+//             data,
+//             105
+//           )
+//             .then(() => {
+//               console.log(`Sent ${data}`);
+//               onSuccess();
+//             })
+//             .catch(error => {
+//               console.error(`Data: ${data}\n`, error);
+//               BleManager.read(
+//                 peripheral.id,
+//                 WIFI_SERVICE_UUID,
+//                 BLE_STATUS_CHARACTERISTIC_UUID
+//               ).then(value => {
+//                 console.log(`BLE status: ${value}`);
+//               });
+//               onFail();
+//             });
+//         })
+//         .catch(e => {
+//           console.log("ERROR: ", e);
+//           onFail();
+//         });
+//     })
+//     .catch(error => {
+//       console.error("Failed to get services", error);
+//       onFail();
+//     });
+// };
+
+// export const connectToBluetoothDevice = async (
+//   device: Peripheral,
+//   onSuccess: () => void,
+//   onFail: () => void
+// ) => {
+//   BleManager.createBond(device.id).then(() => {
+//     console.log("BLE device paired successfully");
+
+//     connectedThroughBluetooth = true;
+//     BleManager.connect(device.id)
+//       .then(() => {
+//         console.log("Connect called for peripheral:", device.id);
+//         onSuccess();
+//       })
+//       .catch(() => {
+//         onFail();
+//       });
+//   });
+// };
+
+// export const stopScanWithReason = (reason: string) => {
+//   BleManager.stopScan()
+//     .then(() => {
+//       console.log(`Scan stopped with reason: \"${reason}\"`);
+//     })
+//     .catch(err => {
+//       console.log(`Attempt to stop scan with reason: \"${reason}\" failed`);
+//       console.error(err);
+//     });
+// };
+
+// var doneScanningForWifi = false;
+
+// export const listenToWifiScanNotifications = (
+//   navigation: SetupProps,
+//   bleManagerEmitter: NativeEventEmitter,
+//   onFullList: (networkList: Network[]) => void
+// ) => {
+//   var networks: Network[] = [];
+
+//   const notificationListener = bleManagerEmitter.addListener(
+//     "BleManagerDidUpdateValueForCharacteristic",
+//     ({ value, peripheral, characteristic, service }) => {
+//       console.log(`Characteristic ID: ${characteristic}`);
+
+//       var byteArray = value as number[];
+//       var ssidBytes: number[] = [];
+//       var bssidBytes: number[] = [];
+
+//       for (let i = 1; i <= 32; i++) {
+//         ssidBytes = ssidBytes.concat(byteArray[i]);
+//       }
+
+//       for (let i = 34; i <= 39; i++) {
+//         bssidBytes = bssidBytes.concat(byteArray[i]);
+//       }
+
+//       let rssi = bssidBytes[40] << (8 + bssidBytes[41]);
+
+//       let ssid = bytesToString(ssidBytes);
+//       let bssid = bytesToString(bssidBytes);
+//       let security = byteArray[42];
+
+//       let network: Network = {
+//         index: ssidBytes[0],
+//         ssid: ssid,
+//         ssidLength: byteArray[33],
+//         bssid: bssid,
+//         rssi: rssi,
+//         security: security,
+//       };
+
+//       console.log(`Network:  ${network.ssid}`);
+//       console.log(`Length: ${network.ssidLength}`);
+
+//       if (
+//         network === null ||
+//         network.ssidLength === null ||
+//         network.ssidLength === 0
+//       ) {
+//         console.log("Empty");
+//         doneScanningForWifi = true;
+//         notificationListener.remove();
+//         bleManagerEmitter.removeAllListeners(
+//           "BleManagerDidUpdateValueForCharacteristic"
+//         );
+//         onFullList(networks);
+//       } else {
+//         if (!networks.includes(network) && !doneScanningForWifi) {
+//           networks = networks.concat(network);
+//         }
+//       }
+//     }
+//   );
+// };
+
+// // Export a bluetooth object for compatibility with the main bluetooth.ts file
+// export const bluetooth = {
+//   connectedThroughBluetooth,
+//   getDSN,
+//   initializeBluetooth,
+//   scanWifiNetworks,
+//   scanForBleDevice,
+//   sendSetupTokenCharacteristic,
+//   sendWifiConnectCharacteristic,
+//   connectToBluetoothDevice,
+//   stopScanWithReason,
+//   listenToWifiScanNotifications
+// };
