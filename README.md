@@ -344,6 +344,12 @@ cd android && ./gradlew assembleRelease
 cd ios && xcodebuild archive ...
 ```
 
+## Branches
+
+- **`main`**: Branch principal para desarrollo y release.
+- **`upgrade/expo-sdk-53`**: Rama de trabajo con upgrade a Expo SDK 53. Se mantiene limpia.
+- **`development_02-24-2026`**: Rama de traspaso/handover (limpieza Android, documentación de ramas). Merge a `main` o a `upgrade/expo-sdk-53` según acuerdo.
+
 ## Contributing
 
 1. **Create a feature branch**

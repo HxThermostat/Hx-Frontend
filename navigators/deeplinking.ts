@@ -72,7 +72,7 @@ const config = {
 };
 
 const deepLinkingConfig: LinkingOptions<RootNavigatorListParams> = {
-  prefixes: ["hx://", "https://hx.kraftful.app/"],
+  prefixes: ["hx://", "https://hx-thermostat.herokuapp.com/"],
   config,
   subscribe(listener: (url: string) => void) {
     const onReceiveURL = ({ url }: { url: string }): void => listener(url);

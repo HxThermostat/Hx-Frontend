@@ -17,5 +17,5 @@ export const attemptToOpenURL = (url: string): void => {
     });
 };
 export const deepLinkInitialURL = (url: string): void => {
-  attemptToOpenURL(url.replace("https://hx.kraftful.app/", "hx://"));
+  attemptToOpenURL(url.replace("https://hx-thermostat.herokuapp.com/", "hx://"));
 };

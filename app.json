@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jci.RIPL",
+      "bundleIdentifier": "com.jci.thermostat280",
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect to and configure thermostats.",
         "NSBluetoothPeripheralUsageDescription": "This app uses Bluetooth to connect to and configure thermostats.",

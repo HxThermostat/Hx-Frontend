@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
       ios: spacing.ptthirtytwo,
       android: spacing.mttwenty,
     }),
-    flex: 1,
   },
   containerEmpty: {
+    flexGrow: 1,
     justifyContent: "space-evenly",
     alignItems: "center",
   },

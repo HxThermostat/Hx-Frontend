@@ -182,6 +182,14 @@ function Geofence({ data: { location } }: GeofenceProps): JSX.Element {
     })();
   }, [location, updateMapView]);
 
+  // Initialize region.current on mount so that the Reminder toggle can work
+  // even when MapView is not active (commented out)
+  useEffect(() => {
+    (async () => {
+      region.current = await geofenceForLocation(location);
+    })();
+  }, [location]);
+
   // initial mount hook: see if we have the geofence
   // enabled/notifications enabled in orrder to set the toggle value
   // appropriately.

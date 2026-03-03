@@ -53,6 +53,7 @@ const defaults = supportDarkAppearance
       textStyle: styles.text,
       tintColor: styles.text.color,
       titleTextStyle: styles.title,
+      useModal: Platform.OS === "android",
     }
   : {};
 
@@ -82,6 +83,8 @@ export const useActionSheet = (): {
           destructiveButtonIndex:
             destructiveButtonIndex > -1 ? destructiveButtonIndex : undefined,
           ...rest,
+          // Asegurar que useModal se aplique en Android y no se sobrescriba
+          useModal: Platform.OS === "android" ? true : rest.useModal,
         };
 
         showActionSheetWithOptions({ ...defaults, ...options }, i => {
