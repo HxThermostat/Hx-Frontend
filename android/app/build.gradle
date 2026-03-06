@@ -91,8 +91,8 @@ android {
         applicationId 'com.jci.RIPL'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1659641969
-        versionName "4.0.2"
+        versionCode 1659641972
+        versionName "4.0.3"
     }
     signingConfigs {
         debug {
