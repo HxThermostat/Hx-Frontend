@@ -1,0 +1,69 @@
+{
+  "expo": {
+    "name": "Hx™",
+    "slug": "Hx",
+    "version": "4.0.3",
+    "orientation": "portrait",
+    "icon": "./assets/images/ic_launcher-playstore.png",
+    "scheme": "Hx",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/ic_launcher-playstore.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jci.thermostat280",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect to and configure thermostats.",
+        "NSBluetoothPeripheralUsageDescription": "This app uses Bluetooth to connect to and configure thermostats.",
+        "NSLocationWhenInUseUsageDescription": "This app uses location to discover nearby Bluetooth devices."
+      },
+      "splash": {
+        "image": "./assets/images/ic_launcher-playstore.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#000000"
+      }
+    },
+    "android": {
+      "splash": {
+        "image": "./assets/images/ic_launcher-playstore.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ],
+      "edgeToEdgeEnabled": false,
+      "package": "com.jci.RIPL"
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/images/ic_launcher-playstore.png"
+    },
+    "plugins": [
+      [
+        "expo-dev-client"
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Hx to access your camera to scan QR codes for thermostat setup."
+        }
+      ],
+      "expo-splash-screen",
+      "expo-asset",
+      "expo-font",
+      "expo-localization",
+      "expo-router",
+      "expo-secure-store"
+    ]
+  }
+}
