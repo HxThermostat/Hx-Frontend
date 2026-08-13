@@ -69,14 +69,6 @@ function Support({ data: { locations } }: SupportProps): JSX.Element {
         subtitleSelectable: true,
         onPress: () => attemptToOpenURL("tel:877-874-7378"),
       },
-      {
-        title: i18n.t("userManual", { scope }),
-        chevron: true,
-        onPress: () =>
-          attemptToOpenURL(
-            "https://files.hvacnavigator.com/p/5407935-uum-e-1020.pdf"
-          ),
-      },
     ];
 
     const dealerItems: Item[] = locations
