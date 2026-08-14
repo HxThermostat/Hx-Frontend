@@ -6,8 +6,6 @@ import { ConnectThermostatNavigatorRouteList } from "~/navigators/ConnectThermos
 
 import i18n from "~/i18n";
 
-import images from "~/assets/images";
-
 import Layout from "./Layout";
 // import { useKohortTracking } from "~/utils/kohort";
 
@@ -29,7 +27,6 @@ export default function Welcome(props: WelcomeProps): JSX.Element {
 
   return (
     <Layout
-      image={images.connect}
       title={i18n.t("title", { scope })}
       instructions={i18n.t("instructions", { scope })}
       buttonLabel={i18n.t("Common.continue")}
