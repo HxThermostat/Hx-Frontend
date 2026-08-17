@@ -58,16 +58,16 @@ function Support({ data: { locations } }: SupportProps): JSX.Element {
       {
         title: i18n.t("email", { scope }),
         chevron: false,
-        subtitle: "cg-upgconsumerrelations@jci.com",
+        subtitle: "BE-AMS-Be-DuctedSystemsResidentialDistributorSupport@bosch-hcgroup.com",
         subtitleSelectable: true,
-        onPress: () => openComposer({ to: "cg-upgconsumerrelations@jci.com" }),
+        onPress: () => openComposer({ to: "BE-AMS-Be-DuctedSystemsResidentialDistributorSupport@bosch-hcgroup.com" }),
       },
       {
         title: i18n.t("phone", { scope }),
         chevron: false,
-        subtitle: "877-874-7378",
+        subtitle: "1-877-874-7378",
         subtitleSelectable: true,
-        onPress: () => attemptToOpenURL("tel:877-874-7378"),
+        onPress: () => attemptToOpenURL("tel:1-877-874-7378"),
       },
     ];
 
@@ -117,3 +117,4 @@ function Support({ data: { locations } }: SupportProps): JSX.Element {
 }
 
 export default withQueryData(useSupportQuery)(Support);
+ 
