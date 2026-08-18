@@ -17,6 +17,7 @@ import { useAuth } from "~/contexts";
 import { useGenerateShareTokenMutation } from "~/graph";
 
 import i18n from "~/i18n";
+import { GRAPH_URL } from "~/constants";
 
 // import { trackSegmentEvent, trackSegmentEventIOS } from "~/utils/segment";
 
@@ -84,13 +85,16 @@ export default function ShareAccount(): JSX.Element {
 
     if (data?.generateShareToken.token) {
       const code = data.generateShareToken.token;
-      const url = `https://hx-thermostat.herokuapp.com/signIn/${email}/${code}`;
+      const webDeepLinkPrefix = GRAPH_URL.endsWith("/") ? GRAPH_URL : `${GRAPH_URL}/`;
+      const url = `${webDeepLinkPrefix}signIn/${encodeURIComponent(email)}/${encodeURIComponent(code)}`;
       const message = i18n.t("share.message", { scope, url, email, code });
 
       // trackSegmentEvent("Share Account Share Sheet Displayed");
 
       Share.share(
         {
+          title: i18n.t("share.subject", { scope }),
+          url,
           message,
         },
         {
