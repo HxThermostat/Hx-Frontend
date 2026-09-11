@@ -17,7 +17,7 @@ const i18n = new I18n({
 
 i18n.defaultLocale = "en";
 i18n.enableFallback = true;
-i18n.locale = Localization.locale;
+i18n.locale = Localization.getLocales()[0]?.languageTag ?? "en";
 
 moment.locale(i18n.locale);
 
@@ -32,7 +32,7 @@ const bestGuessRegionForAndroid = (locale: string): string => {
 
 export const usersCurrentRegion =
   Platform.OS === "ios"
-    ? Localization.region
+    ? Localization.getLocales()[0]?.regionCode ?? "US"
     : bestGuessRegionForAndroid(i18n.locale);
 
 export default i18n;

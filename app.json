@@ -17,6 +17,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.jci.thermostat280",
       "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": true,
         "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect to and configure thermostats.",
         "NSBluetoothPeripheralUsageDescription": "This app uses Bluetooth to connect to and configure thermostats.",
         "NSLocationWhenInUseUsageDescription": "This app uses location to discover nearby Bluetooth devices."

@@ -69,7 +69,7 @@ target 'Hx' do
         # Forzar solo ARM64 para evitar problemas con x86_64 en simulador
         config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'x86_64'
-        
+
         # Fix específico para ExpoLocalization
         if target.name == 'ExpoLocalization'
           config.build_settings['DEFINES_MODULE'] = 'YES'
@@ -100,5 +100,56 @@ target 'Hx' do
       end
       xcode_project.save
     end
+
+    # Fix: patch fmt base.h to disable consteval on all Apple Clang versions.
+    # The header redefines FMT_USE_CONSTEVAL unconditionally, so -D flags have no effect.
+    fmt_base_h = File.join(installer.sandbox.root, 'fmt/include/fmt/base.h')
+    if File.exist?(fmt_base_h)
+      content = File.read(fmt_base_h)
+      patched = content.gsub(
+        "#elif defined(__apple_build_version__) && __apple_build_version__ < 14000029L\n#  define FMT_USE_CONSTEVAL 0  // consteval is broken in Apple clang < 14.",
+        "#elif defined(__apple_build_version__)\n#  define FMT_USE_CONSTEVAL 0  // consteval is broken in Apple clang"
+      )
+      if patched != content
+        File.chmod(0644, fmt_base_h)
+        File.write(fmt_base_h, patched)
+      end
+    end
+
+    # Fix: ExpoAppDelegate does not exist in expo-modules-core 2.4.x.
+    # expo-file-system references ExpoAppDelegate.getSubscriberOfType() which is
+    # actually ExpoAppDelegateSubscriberRepository.getSubscriberOfType().
+    # Add a typealias so the Swift compiler can resolve the symbol.
+    subscriber_repo = File.join(installer.sandbox.root, '../../node_modules/expo-modules-core/ios/AppDelegates/ExpoAppDelegateSubscriberRepository.swift')
+    subscriber_repo = File.expand_path(subscriber_repo)
+    if File.exist?(subscriber_repo)
+      content = File.read(subscriber_repo)
+      unless content.include?('typealias ExpoAppDelegate')
+        File.chmod(0644, subscriber_repo)
+        File.write(subscriber_repo, content + "\npublic typealias ExpoAppDelegate = ExpoAppDelegateSubscriberRepository\n")
+      end
+    end
+
+    # Fix: RCTAppDelegate+Recreate.h is missing from expo-modules-core 2.4.x but
+    # required by expo-dev-launcher. Create a stub header in the ExpoModulesCore
+    # public headers directory so the import resolves.
+    recreate_header_dir = File.join(installer.sandbox.root, 'Headers/Public/ExpoModulesCore')
+    recreate_header = File.join(recreate_header_dir, 'RCTAppDelegate+Recreate.h')
+    FileUtils.mkdir_p(recreate_header_dir)
+    File.write(recreate_header, <<~OBJC)
+      // Stub header: RCTAppDelegate+Recreate was removed in expo-modules-core 2.4.x
+      #if __has_include(<React-RCTAppDelegate/RCTAppDelegate.h>)
+      #import <React-RCTAppDelegate/RCTAppDelegate.h>
+      #elif __has_include(<React_RCTAppDelegate/RCTAppDelegate.h>)
+      #import <React_RCTAppDelegate/RCTAppDelegate.h>
+      #endif
+      #import <UIKit/UIKit.h>
+      @interface RCTAppDelegate (Recreate)
+      - (nonnull UIView *)recreateRootViewWithBundleURL:(nullable NSURL *)bundleURL
+                                             moduleName:(nullable NSString *)moduleName
+                                           initialProps:(nullable NSDictionary *)initialProps
+                                          launchOptions:(nullable NSDictionary *)launchOptions;
+      @end
+    OBJC
   end
 end
