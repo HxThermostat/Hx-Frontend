@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator, NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import React, { JSX, useRef } from "react";
-import { Text, TextInput } from "react-native";
+import { StatusBar, Text, TextInput } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider as PaperProvider } from "react-native-paper";
 
@@ -92,11 +92,11 @@ const App = (): JSX.Element => {
               <Background>
                 <PaperProvider theme={AndroidTheme}>
                   <NavigatorsContext.Provider value={{ isTablet: useIsTablet() }}>
-                    {/* <StatusBar
-                      style="light"
-                      backgroundColor="transparent"
-                      translucent={true}
-                    /> */}
+                    <StatusBar
+                      barStyle="light-content"
+                      backgroundColor="#000000"
+                      translucent={false}
+                    />
                     <NavigationContainer
                       onReady={handleNavigationReady}
                       onStateChange={handleNavigationStateChange}

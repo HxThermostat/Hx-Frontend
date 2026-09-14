@@ -524,7 +524,7 @@ function Home(props: HomeProps): JSX.Element {
   return (
     <Background>
       <NestableSafeAreaView
-        edges={["right", "left"]}
+        edges={["top", "right", "left"]}
         style={styles.container}
       >
         <ScrollView
