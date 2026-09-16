@@ -91,11 +91,16 @@ export default function TabNavigator(): JSX.Element {
       screenOptions={{
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarActiveTintColor: colors.tint,
+         headerShown: true,
+         headerStyle: {
+           height: 64
+         },
       }}
     >
       <TabScreen
         name={"Home"}
         options={{
+          headerShown: false,
           tabBarLabel: i18n.t("home", { scope }),
           tabBarAccessibilityLabel: i18n.t("home", { scope }),
           // eslint-disable-next-line react/display-name
@@ -106,6 +111,7 @@ export default function TabNavigator(): JSX.Element {
       <TabScreen
         name={"Schedules"}
         options={{
+          headerShown: false,
           tabBarLabel: i18n.t("schedules", { scope }),
           tabBarAccessibilityLabel: i18n.t("schedules", { scope }),
           // eslint-disable-next-line react/display-name
@@ -116,6 +122,7 @@ export default function TabNavigator(): JSX.Element {
       <TabScreen
         name={"Settings"}
         options={{
+          headerShown: false,
           tabBarLabel: i18n.t("settings", { scope }),
           tabBarAccessibilityLabel: i18n.t("settings", { scope }),
           // eslint-disable-next-line react/display-name
