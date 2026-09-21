@@ -14,7 +14,7 @@ Before you begin, ensure you have the following installed:
 - **Java Development Kit (JDK)** 11 or higher
 - **Gradle** (usually bundled with Android Studio)
 
-## Local Development Setup
+## Local Development Setup 
 
 ### 1. Clone and Install Dependencies
 
