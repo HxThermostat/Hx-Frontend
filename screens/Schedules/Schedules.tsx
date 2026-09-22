@@ -313,7 +313,7 @@ function Schedules(props: SchedulesScreenProps): JSX.Element {
 
   return (
     <NestableSafeAreaView
-      edges={["right", "left"]}
+      edges={["top", "right", "left"]}
       style={styles.container}
     >
       {Platform.OS === "android" && (

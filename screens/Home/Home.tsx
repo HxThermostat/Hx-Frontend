@@ -68,6 +68,10 @@ const styles = StyleSheet.create({
     zIndex: 1,
     marginBottom: -18,
   },
+  screenTitle: {
+    ...fonts.largeTitle,
+    ...spacing.mbsixteen,
+  },
   controls: {},
   dialContainer: {
     alignItems: "center",
@@ -524,7 +528,7 @@ function Home(props: HomeProps): JSX.Element {
   return (
     <Background>
       <NestableSafeAreaView
-        edges={["right", "left"]}
+        edges={["top", "right", "left"]}
         style={styles.container}
       >
         <ScrollView
@@ -532,6 +536,9 @@ function Home(props: HomeProps): JSX.Element {
           contentContainerStyle={styles.scrollFlex}
         >
           <View style={styles.titleBarContainer}>
+            <Text style={styles.screenTitle}>
+              {i18n.t("home", { scope: "Common" })}
+            </Text>
             <HomeTitleBar
               onPress={goToSelectZone}
               disabled={singleController}
