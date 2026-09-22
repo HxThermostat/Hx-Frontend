@@ -108,6 +108,18 @@ const styles = StyleSheet.create({
 
 const scope = "Screens.Unauthenticated.EnterEmailConfirmation";
 
+const decodeLinkParam = (value?: string): string | undefined => {
+  if (value == null) {
+    return value;
+  }
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
 type EnterEmailConfirmationScreenNavigationProp = NativeStackNavigationProp<
   UnauthenticatedNavigatorRouteList,
   "EnterEmailConfirmation"
@@ -123,7 +135,9 @@ export default function EnterEmailConfirmation(
 ): JSX.Element {
   // email should always be present
   // a deep link may also contain the email token from which we could submit immediately
-  const { email, emailToken } = props.route.params;
+  const { email: routeEmail, emailToken: routeEmailToken } = props.route.params;
+  const email = decodeLinkParam(routeEmail) ?? routeEmail;
+  const emailToken = decodeLinkParam(routeEmailToken);
   const { navigation } = props;
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import { Linking } from "react-native";
+import { GRAPH_URL } from "~/constants";
 
 // Abstract linking functions into helpers
 // Deep linking occurs in navigators/deeplinking.ts
@@ -17,5 +18,6 @@ export const attemptToOpenURL = (url: string): void => {
     });
 };
 export const deepLinkInitialURL = (url: string): void => {
-  attemptToOpenURL(url.replace("https://hx-thermostat.herokuapp.com/", "hx://"));
+  const webDeepLinkPrefix = GRAPH_URL.endsWith("/") ? GRAPH_URL : `${GRAPH_URL}/`;
+  attemptToOpenURL(url.replace(webDeepLinkPrefix, "Hx://"));
 };

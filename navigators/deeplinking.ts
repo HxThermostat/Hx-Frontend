@@ -6,6 +6,7 @@
 import { LinkingOptions } from "@react-navigation/native";
 import { addNotificationReceivedListener } from "expo-notifications";
 import { Linking } from "react-native";
+import { GRAPH_URL } from "~/constants";
 import { RootNavigatorListParams } from "../App";
 
 // Define the settings config without type parameters since it's used in a nested structure
@@ -71,8 +72,10 @@ const config = {
   },
 };
 
+const WEB_DEEP_LINK_PREFIX = GRAPH_URL.endsWith("/") ? GRAPH_URL : `${GRAPH_URL}/`;
+
 const deepLinkingConfig: LinkingOptions<RootNavigatorListParams> = {
-  prefixes: ["hx://", "https://hx-thermostat.herokuapp.com/"],
+  prefixes: ["Hx://", "hx://", WEB_DEEP_LINK_PREFIX],
   config,
   subscribe(listener: (url: string) => void) {
     const onReceiveURL = ({ url }: { url: string }): void => listener(url);
@@ -84,7 +87,11 @@ const deepLinkingConfig: LinkingOptions<RootNavigatorListParams> = {
       const url = response.request.content.data?.url;
 
       // If we provide a URL property, deep link to it right away
-      if (typeof url === "string" && url.startsWith("hx://")) {
+      if (
+        typeof url === "string" &&
+        (/^(Hx|hx):\/\//.test(url) ||
+          url.startsWith(WEB_DEEP_LINK_PREFIX))
+      ) {
         listener(url);
       }
     });
