@@ -1,4 +1,4 @@
-import React, { JSX } from "react";
+import React, { JSX, useMemo, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 
 import SettingsNavigator from "~/navigators/SettingsNavigator";
@@ -7,6 +7,12 @@ import SettingsScreen from "../Settings";
 import colors from "~/styles/color";
 import fonts from "~/styles/fonts";
 import spacing from "~/styles/spacing";
+
+import {
+  SplitViewSettingsContext,
+  SplitViewSettingsContextProps,
+  SplitViewSettingsRoute,
+} from "~/contexts";
 
 // @TODO zibs this styling could use some improvement eventually
 const styles = StyleSheet.create({
@@ -31,15 +37,31 @@ const styles = StyleSheet.create({
 });
 
 const SettingsSplitViewScreen = (): JSX.Element => {
+  const routeParamsHandlerRef = useRef<
+    (params: SplitViewSettingsRoute) => void
+  >();
+
+  const contextValue = useMemo<SplitViewSettingsContextProps>(
+    () => ({
+      setRouteParams: params => routeParamsHandlerRef.current?.(params),
+      setRouteParamsHandler: handler => {
+        routeParamsHandlerRef.current = handler;
+      },
+    }),
+    []
+  );
+
   return (
-    <View style={styles.tabletRoot}>
-      <View style={styles.tabletMasterView}>
-        <SettingsScreen />
+    <SplitViewSettingsContext.Provider value={contextValue}>
+      <View style={styles.tabletRoot}>
+        <View style={styles.tabletMasterView}>
+          <SettingsScreen />
+        </View>
+        <View style={styles.tabletDetailView}>
+          <SettingsNavigator />
+        </View>
       </View>
-      <View style={styles.tabletDetailView}>
-        <SettingsNavigator />
-      </View>
-    </View>
+    </SplitViewSettingsContext.Provider>
   );
 };
 

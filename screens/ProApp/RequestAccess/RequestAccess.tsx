@@ -17,6 +17,7 @@ import { useAuth } from "~/contexts";
 
 import { ShareAccessLevel, useRequestShareMutation } from "~/graph";
 import i18n from "~/i18n";
+import { GRAPH_URL } from "~/constants";
 
 import Background from "~/components/Background";
 import TextInput from "~/components/Inputs/TextInput";
@@ -125,7 +126,8 @@ export default function RequestAccess({
   }, []);
 
   const onShareRequestPress = useCallback(() => {
-    const url = `https://hx-thermostat.herokuapp.com/grantAccess/${installerEmail}/${accessLevel}/${
+    const webDeepLinkPrefix = GRAPH_URL.endsWith("/") ? GRAPH_URL : `${GRAPH_URL}/`;
+    const url = `${webDeepLinkPrefix}grantAccess/${installerEmail}/${accessLevel}/${
       limitAccess ? "1" : ""
     }`;
 
