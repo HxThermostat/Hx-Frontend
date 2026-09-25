@@ -13,6 +13,8 @@ import {
   useAuth,
   useController,
   useTemperatureUnit,
+  SplitViewSettingsContext,
+  SplitViewSettingsRoute,
 } from "~/contexts";
 
 import {
@@ -67,6 +69,7 @@ export type SettingsProps = {
 function Settings({ data }: SettingsProps): JSX.Element {
   const { locationId } = useController();
   const { isTablet } = useContext(NavigatorsContext);
+  const splitViewSettings = useContext(SplitViewSettingsContext);
 
   // Non-obvious, but we need to use the hook (as opposed to getting
   // this from props) because of how we use this screen in the
@@ -338,10 +341,17 @@ function Settings({ data }: SettingsProps): JSX.Element {
       // so we force the other navigation path.
       const forceNavigation = !!item.navigate.force;
       if (isTablet && !isProSettings && !forceNavigation) {
-        navigation.navigate("SplitViewSettings", {
-          ...item.navigate.params,
-          routeName: item.navigate.name,
-        });
+        if (splitViewSettings) {
+          splitViewSettings.setRouteParams({
+            ...item.navigate.params,
+            routeName: item.navigate.name,
+          } as SplitViewSettingsRoute);
+        } else {
+          navigation.navigate("SplitViewSettings", {
+            ...item.navigate.params,
+            routeName: item.navigate.name,
+          });
+        }
       } else {
         navigation.navigate(item.navigate.name, item.navigate.params);
       }
